@@ -20,13 +20,11 @@ public class ListaNotasAtivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista_notas);
         ListView lista = findViewById(R.id.listView);
         NotaDAO dao = new NotaDAO();
-        for (int i = 1; i <= 10000; i++) {
-            dao.insere(new Nota("Primeira nota", "Olá mundo!!!"));
-
+        for (int i = 1; i < 10000; i++) {
+            dao.insere(new Nota("Primeira nota" + i, "Olá mundo!!!"));
         }
 
         List<Nota> todos = dao.todos();
-
         lista.setAdapter(new ListaNotasAdapter(this, todos));
     }
 }
