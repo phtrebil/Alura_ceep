@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="inserir_uma_nota">Inserir uma nota</string>
+    <string name="salva_nota">salva nota</string>
 </resources>
