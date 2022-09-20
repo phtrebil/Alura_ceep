@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context="br.com.alura.ceep.ui.ListaNotasAtivity">
 
-    <ListView
-        android:id="@+id/listView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/lista_notas_insere_nota"
