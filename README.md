@@ -7,5 +7,6 @@ Aplicativos de notas construindo durante o curso de recycler view na alura
      - [relrease/aplicando_recyclreview](https://github.com/phtrebil/Alura_ceep/tree/relrease/aplicando_recyclreview).
      - [release/refatorando_codigo](https://github.com/phtrebil/Alura_ceep/tree/release/refatorando_codigo)
      - [release/acrescentando_activity_de_formulario](https://github.com/phtrebil/Alura_ceep/tree/release/acrescentando_activity_de_formulario)
+     - [release/melhorando_adapter](https://github.com/phtrebil/Alura_ceep/tree/release/melhorando_adapter)
      
     
