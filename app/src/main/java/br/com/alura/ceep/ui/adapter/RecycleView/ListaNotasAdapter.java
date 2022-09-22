@@ -1,6 +1,7 @@
 package br.com.alura.ceep.ui.adapter.RecycleView;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,10 @@ import br.com.alura.ceep.model.Nota;
 
 public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotaViewHoder> {
 
-    private List<Nota> notas;
-    private Context context;
+    private final List<Nota> notas;
+    private final Context context;
+    private int quantidadeViewHolder = 0;
+
 
     public ListaNotasAdapter(Context context, List<Nota> notas) {
         this.context = context;
@@ -27,7 +30,10 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
     @NonNull
     @Override
     public NotaViewHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        quantidadeViewHolder++;
         View viewCriada = LayoutInflater.from(context).inflate(R.layout.item_nota, parent, false);
+        Log.i("recyclerView adapter",
+                "quantidade view holder: " + quantidadeViewHolder);
         return new NotaViewHoder(viewCriada);
     }
 
@@ -43,7 +49,12 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
     public int getItemCount() {
         return notas.size();
     }
-    
+
+    public void adiciona(Nota nota) {
+        notas.add(nota);
+        notifyDataSetChanged();
+    }
+
     class NotaViewHoder extends RecyclerView.ViewHolder{
 
         private final TextView titulo;
@@ -59,5 +70,7 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
             titulo.setText(nota.getTitulo());
             descricao.setText(nota.getDescricao());
         }
+
+
     }
 }

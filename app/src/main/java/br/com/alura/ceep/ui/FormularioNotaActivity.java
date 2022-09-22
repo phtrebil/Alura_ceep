@@ -1,15 +1,13 @@
 package br.com.alura.ceep.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 
-import org.w3c.dom.Text;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.dao.NotaDAO;
@@ -31,11 +29,14 @@ public class FormularioNotaActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menu_formulario_salvar) {
-            TextView titulo = findViewById(R.id.formulario_nota_titulo);
-            TextView descricao = findViewById(R.id.formulario_nota_descricao);
-            Nota notaCriada = new Nota(titulo.getText().toString(), descricao.getText().toString());
-            new NotaDAO().insere(notaCriada);
+        if(item.getItemId() == R.id.menu_formulario_salvar){
+            EditText titulo = findViewById(R.id.formulario_nota_titulo);
+            EditText descricao = findViewById(R.id.formulario_nota_descricao);
+            Nota notaCriada = new Nota(titulo.getText().toString(),
+                    descricao.getText().toString());
+            Intent resultadoInsercao = new Intent();
+            resultadoInsercao.putExtra("nota", notaCriada);
+            setResult(2,resultadoInsercao);
             finish();
         }
         return super.onOptionsItemSelected(item);
