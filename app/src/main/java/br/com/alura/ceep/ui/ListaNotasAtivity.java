@@ -1,12 +1,15 @@
 package br.com.alura.ceep.ui;
 
+import static br.com.alura.ceep.ui.NotaActivityConstantes.CHAVE_NOTA;
+import static br.com.alura.ceep.ui.NotaActivityConstantes.CODIGO_RESULTADO_NOTA_CRIADA;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -21,36 +24,59 @@ import br.com.alura.ceep.ui.adapter.RecycleView.ListaNotasAdapter;
 public class ListaNotasAtivity extends AppCompatActivity {
 
     private ListaNotasAdapter adapter;
-    private List<Nota> todos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
-        todos = notasDeExemplo();
+        List<Nota> todos = getNotas();
         configuraRecyclerView(todos);
+        configuraBotaoInsereNota();
+    }
 
+    private void configuraBotaoInsereNota() {
         TextView textoInsereNota = findViewById(R.id.lista_notas_insere_nota);
+        vaiParaFormularioNotaActivity(textoInsereNota);
+    }
+
+    private void vaiParaFormularioNotaActivity(TextView textoInsereNota) {
         textoInsereNota.setOnClickListener(view -> {
             Intent abreFormulario = new Intent(ListaNotasAtivity.this, FormularioNotaActivity.class);
             abreActivity.launch(abreFormulario);
         });
     }
 
-    ActivityResultLauncher<Intent>  abreActivity = registerForActivityResult(
+    private List<Nota> getNotas() {
+        NotaDAO dao = new NotaDAO();
+        return dao.todos();
+    }
+
+    ActivityResultLauncher<Intent> abreActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
                 Intent data = result.getData();
-                if (result.getResultCode() == 2 && data.hasExtra("nota")) {
-                    Nota notaRecebida = (Nota) data.getSerializableExtra("nota");
-                    adapter.adiciona(notaRecebida);
+                if (ehUmResultadoComNota(result, data)) {
+                    adicionaNota(data);
                 }
             }
     );
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void adicionaNota(Intent data) {
+        Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+        adapter.adiciona(notaRecebida);
     }
+
+    private boolean ehUmResultadoComNota(ActivityResult result, Intent data) {
+        return verificaCodigoDeResultadoInsereNota(result) && verificaSeTemNota(data);
+    }
+
+    private boolean verificaSeTemNota(Intent data) {
+        return data.hasExtra(CHAVE_NOTA);
+    }
+
+    private boolean verificaCodigoDeResultadoInsereNota(ActivityResult result) {
+        return result.getResultCode() == CODIGO_RESULTADO_NOTA_CRIADA;
+    }
+
 
     private void configuraRecyclerView(List<Nota> todos) {
         RecyclerView lista = findViewById(R.id.RecyclerView);
@@ -68,12 +94,5 @@ public class ListaNotasAtivity extends AppCompatActivity {
         lista.setAdapter(adapter);
     }
 
-    private List<Nota> notasDeExemplo() {
-        NotaDAO dao = new NotaDAO();
-        dao.insere(new Nota("Primeira nota", "Olá mundo!!!"));
-        dao.insere(new Nota("Primeira nota", "Olá mundo555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555!!!"));
-        dao.insere(new Nota("Primeira nota", "Olá mundo2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222!!!"));
-        dao.insere(new Nota("Primeira nota", "Olá mundooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo!!!"));
-        return dao.todos();
-    }
+
 }
