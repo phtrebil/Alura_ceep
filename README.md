@@ -14,3 +14,4 @@ Aplicativos de notas construindo durante o curso de recycler view na alura
   2. Recycler View parte 2: Listeners, animações e boas práticas
      
      - [release/implementando_listener](https://github.com/phtrebil/Alura_ceep/tree/release/implementando_listener)
+     - [release/alterando_nota](https://github.com/phtrebil/Alura_ceep/tree/release/alterando_nota)
