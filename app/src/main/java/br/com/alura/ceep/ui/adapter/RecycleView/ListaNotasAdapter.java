@@ -55,6 +55,10 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
         notas.add(nota);
         notifyDataSetChanged();
     }
+    public void altera(int posicao, Nota nota) {
+        notas.set(posicao, nota);
+        notifyDataSetChanged();
+    }
 
     class NotaViewHoder extends RecyclerView.ViewHolder {
 
@@ -66,7 +70,7 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
             super(itemView);
             titulo = itemView.findViewById(R.id.item_nota_titulo);
             descricao = itemView.findViewById(R.id.item_nota_descricao);
-            itemView.setOnClickListener(view -> onClickListener.onItemClick(nota));
+            itemView.setOnClickListener(view -> onClickListener.onItemClick(nota, getBindingAdapterPosition()));
         }
 
         public void vincula(Nota nota){

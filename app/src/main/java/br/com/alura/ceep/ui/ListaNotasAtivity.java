@@ -6,11 +6,11 @@ import static br.com.alura.ceep.ui.NotaActivityConstantes.CODIGO_RESULTADO_NOTA_
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -34,6 +34,19 @@ public class ListaNotasAtivity extends AppCompatActivity {
         List<Nota> todos = getNotas();
         configuraRecyclerView(todos);
         configuraBotaoInsereNota();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 2 &&
+                resultCode == CODIGO_RESULTADO_NOTA_CRIADA &&
+                verificaSeTemNota(data) && data.hasExtra("posicao")){
+            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+            int posicaoRecebida = data.getIntExtra("posicao", -1);
+            new NotaDAO().altera(posicaoRecebida, notaRecebida);
+            adapter.altera(posicaoRecebida, notaRecebida);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void configuraBotaoInsereNota() {
@@ -66,6 +79,8 @@ public class ListaNotasAtivity extends AppCompatActivity {
                 }
             }
     );
+
+
 
     private void adicionaNota(Intent data) {
         Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
@@ -100,10 +115,16 @@ public class ListaNotasAtivity extends AppCompatActivity {
     private void configuraAdapter(List<Nota> todos, RecyclerView lista) {
         adapter = new ListaNotasAdapter(this, todos);
         lista.setAdapter(adapter);
-        adapter.setOnItemClickListener(nota ->
-                Toast.makeText(ListaNotasAtivity.this,
-                nota.getTitulo(),
-                Toast.LENGTH_SHORT).show());
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Nota nota, int posicao) {
+                Intent abreFormularioComNota = new Intent(ListaNotasAtivity.this,
+                        FormularioNotaActivity.class);
+                abreFormularioComNota.putExtra(CHAVE_NOTA, nota);
+                abreFormularioComNota.putExtra("posicao", posicao);
+                startActivityForResult(abreFormularioComNota, 2); ;
+            }
+        });
     }
 
 
