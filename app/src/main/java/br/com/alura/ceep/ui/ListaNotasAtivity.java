@@ -1,11 +1,15 @@
 package br.com.alura.ceep.ui;
 
 import static br.com.alura.ceep.ui.NotaActivityConstantes.CHAVE_NOTA;
+import static br.com.alura.ceep.ui.NotaActivityConstantes.CHAVE_POSICAO;
+import static br.com.alura.ceep.ui.NotaActivityConstantes.CODIGO_RESULTADO_NOTA_ALTERADA;
 import static br.com.alura.ceep.ui.NotaActivityConstantes.CODIGO_RESULTADO_NOTA_CRIADA;
+import static br.com.alura.ceep.ui.NotaActivityConstantes.POSICAO_INVALIDA;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
@@ -38,23 +42,46 @@ public class ListaNotasAtivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 2 &&
-                resultCode == CODIGO_RESULTADO_NOTA_CRIADA &&
-                verificaSeTemNota(data) && data.hasExtra("posicao")){
+        if (ehResultadoAlteraNota(requestCode, resultCode, data)) {
             Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-            int posicaoRecebida = data.getIntExtra("posicao", -1);
-            new NotaDAO().altera(posicaoRecebida, notaRecebida);
-            adapter.altera(posicaoRecebida, notaRecebida);
+            int posicaoRecebida = data.getIntExtra(CHAVE_POSICAO, -1);
+
+            if (resultadoAlteraNota(posicaoRecebida)) {
+                altera(notaRecebida, posicaoRecebida);
+            }else{
+                Toast.makeText(this,
+                        "Ocorreu um problema na alteração da nota",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void configuraBotaoInsereNota() {
-        TextView textoInsereNota = findViewById(R.id.lista_notas_insere_nota);
-        vaiParaFormularioNotaActivity(textoInsereNota);
+    private void altera(Nota notaRecebida, int posicaoRecebida) {
+        new NotaDAO().altera(posicaoRecebida, notaRecebida);
+        adapter.altera(posicaoRecebida, notaRecebida);
     }
 
-    private void vaiParaFormularioNotaActivity(TextView textoInsereNota) {
+    private boolean resultadoAlteraNota(int posicaoRecebida) {
+        return posicaoRecebida > POSICAO_INVALIDA;
+    }
+
+    private boolean ehResultadoAlteraNota(int requestCode, int resultCode, @Nullable Intent data) {
+        return codigoRequisicaoAlteraNota(requestCode, 2) &&
+                resultCode == CODIGO_RESULTADO_NOTA_CRIADA &&
+                verificaSeTemNota(data);
+    }
+
+    private boolean codigoRequisicaoAlteraNota(int requestCode, int i) {
+        return requestCode == CODIGO_RESULTADO_NOTA_ALTERADA;
+    }
+
+    private void configuraBotaoInsereNota() {
+        TextView textoInsereNota = findViewById(R.id.lista_notas_insere_nota);
+        vaiParaFormularioNotaActivityInsere(textoInsereNota);
+    }
+
+    private void vaiParaFormularioNotaActivityInsere(TextView textoInsereNota) {
         textoInsereNota.setOnClickListener(view -> {
             Intent abreFormulario = new Intent(ListaNotasAtivity.this, FormularioNotaActivity.class);
             abreActivity.launch(abreFormulario);
@@ -79,7 +106,6 @@ public class ListaNotasAtivity extends AppCompatActivity {
                 }
             }
     );
-
 
 
     private void adicionaNota(Intent data) {
@@ -121,8 +147,9 @@ public class ListaNotasAtivity extends AppCompatActivity {
                 Intent abreFormularioComNota = new Intent(ListaNotasAtivity.this,
                         FormularioNotaActivity.class);
                 abreFormularioComNota.putExtra(CHAVE_NOTA, nota);
-                abreFormularioComNota.putExtra("posicao", posicao);
-                startActivityForResult(abreFormularioComNota, 2); ;
+                abreFormularioComNota.putExtra(CHAVE_POSICAO, posicao);
+                startActivityForResult(abreFormularioComNota, CODIGO_RESULTADO_NOTA_ALTERADA);
+                ;
             }
         });
     }
