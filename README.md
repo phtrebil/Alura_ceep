@@ -16,3 +16,4 @@ Aplicativos de notas construindo durante o curso de recycler view na alura
      - [release/implementando_listener](https://github.com/phtrebil/Alura_ceep/tree/release/implementando_listener)
      - [release/alterando_nota](https://github.com/phtrebil/Alura_ceep/tree/release/alterando_nota)
      - [release/refatorando_codigo_3](https://github.com/phtrebil/Alura_ceep/tree/release/refatorando_codigo_3)
+     - [release/implementando_animacoes_nos_elementos](https://github.com/phtrebil/Alura_ceep/tree/release/implementando_animacoes_nos_elementos)
