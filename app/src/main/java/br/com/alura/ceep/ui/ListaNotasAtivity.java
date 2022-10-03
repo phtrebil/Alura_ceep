@@ -28,19 +28,37 @@ import br.com.alura.ceep.ui.recyclerview.helper.callback.NotaItemThouchHelperCal
 
 public class ListaNotasAtivity extends AppCompatActivity {
 
+    public static final String APPBAR_TITLE = "Notas";
     private ListaNotasAdapter adapter;
+
+    ActivityResultLauncher<Intent> abreActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                Intent data = result.getData();
+                if (ehUmResultadoComNota(result, data)) {
+                    adicionaNota(data);
+                }
+
+            }
+    );
+
+    ActivityResultLauncher<Intent> editaActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                Intent data = result.getData();
+                alteraNota(result, data);
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
+        setTitle(APPBAR_TITLE);
         List<Nota> todos = getNotas();
         configuraRecyclerView(todos);
         configuraBotaoInsereNota();
     }
 
     private void altera(Nota notaRecebida, int posicaoRecebida) {
-        new NotaDAO().altera(posicaoRecebida, notaRecebida);
+        new NotaDAO().alteraNota(posicaoRecebida, notaRecebida);
         adapter.altera(posicaoRecebida, notaRecebida);
     }
 
@@ -63,29 +81,8 @@ public class ListaNotasAtivity extends AppCompatActivity {
 
     private List<Nota> getNotas() {
         NotaDAO dao = new NotaDAO();
-        for (int i = 0; i < 10; i++) {
-            dao.insere(
-                    new Nota("Título " + (i + 1),
-                            "Descrição " + (i + 1)));
-        }
         return dao.todos();
     }
-
-    ActivityResultLauncher<Intent> abreActivity = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                Intent data = result.getData();
-                if (ehUmResultadoComNota(result, data)) {
-                    adicionaNota(data);
-                }
-
-            }
-    );
-
-    ActivityResultLauncher<Intent> editaActivity = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                Intent data = result.getData();
-                alteraNota(result, data);
-            });
 
     private void alteraNota(ActivityResult result, Intent data) {
         if (ehUmResultadoComNota(result, data)) {
@@ -109,6 +106,8 @@ public class ListaNotasAtivity extends AppCompatActivity {
 
     private void adicionaNota(Intent data) {
         Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+        NotaDAO dao = new NotaDAO();
+        dao.insere(notaRecebida);
         adapter.adiciona(notaRecebida);
     }
 

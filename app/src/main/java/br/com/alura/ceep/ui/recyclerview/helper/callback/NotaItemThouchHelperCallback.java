@@ -17,17 +17,16 @@ public class NotaItemThouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        int marcacoesDeDeslize = ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
-        int marcacoesDeArrastar = ItemTouchHelper.DOWN | ItemTouchHelper.UP
-                | ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
+        int marcacoesDeDeslize = ItemTouchHelper.START | ItemTouchHelper.END;
+        int marcacoesDeArrastar = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END;
         return makeMovementFlags(marcacoesDeArrastar, marcacoesDeDeslize);
     }
 
 
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-        int posicaoInicial = viewHolder.getAbsoluteAdapterPosition();
-        int posicaoFinal = target.getAbsoluteAdapterPosition();
+        int posicaoInicial = viewHolder.getBindingAdapterPosition();
+        int posicaoFinal = target.getBindingAdapterPosition();
         trocaNotas(posicaoInicial, posicaoFinal);
         return true;
 
@@ -40,7 +39,7 @@ public class NotaItemThouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        int notaDeslizada = viewHolder.getAbsoluteAdapterPosition();
+        int notaDeslizada = viewHolder.getBindingAdapterPosition();
         removeNotas(notaDeslizada);
     }
 

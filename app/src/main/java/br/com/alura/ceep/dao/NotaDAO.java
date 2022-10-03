@@ -18,7 +18,7 @@ public class NotaDAO {
         NotaDAO.notas.addAll(Arrays.asList(notas));
     }
 
-    public void altera(int posicao, Nota nota) {
+    public void alteraNota(int posicao, Nota nota) {
         notas.set(posicao, nota);
     }
 
